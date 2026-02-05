@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useState } from "react";
+import { useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
 import { useTasks } from "@/hooks/useTasks";
 import { Button } from "@/components/ui/Button";
@@ -9,6 +10,7 @@ import { TaskList } from "@/components/tasks/TaskList";
 import { EditTaskModal } from "@/components/tasks/EditTaskModal";
 
 export function DashboardContainer() {
+  const router = useRouter();
   const { user, logout } = useAuth();
   const { tasks, addTask, updateTaskStatus, updateTask, deleteTask } = useTasks();
   const [editingTask, setEditingTask] = useState<{
@@ -55,6 +57,11 @@ export function DashboardContainer() {
     setEditingTask(null);
   }, []);
 
+  const handleLogout = useCallback(() => {
+    logout();
+    router.replace("/login");
+  }, [logout, router]);
+
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-900">
       <header className="border-b border-zinc-200 bg-white dark:border-zinc-700 dark:bg-zinc-800">
@@ -66,7 +73,7 @@ export function DashboardContainer() {
             <span className="text-sm text-zinc-600 dark:text-zinc-400" aria-label="Logged in as">
               {user?.name ?? user?.email}
             </span>
-            <Button variant="ghost" onClick={logout} aria-label="Sign out">
+            <Button variant="ghost" onClick={handleLogout} aria-label="Sign out">
               Sign out
             </Button>
           </div>

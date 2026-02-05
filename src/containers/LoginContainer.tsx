@@ -9,6 +9,17 @@ export function LoginContainer() {
   const { login, isAuthenticated } = useAuth();
   const router = useRouter();
 
+  const handleSubmit = useCallback(
+    (credentials: { email: string; password: string }) => {
+      const result = login(credentials);
+      if (result.success) {
+        router.replace("/dashboard");
+      }
+      return result;
+    },
+    [login, router]
+  );
+
   useEffect(() => {
     if (isAuthenticated) router.replace("/dashboard");
   }, [isAuthenticated, router]);
@@ -20,17 +31,6 @@ export function LoginContainer() {
       </div>
     );
   }
-
-  const handleSubmit = useCallback(
-    (credentials: { email: string; password: string }) => {
-      const result = login(credentials);
-      if (result.success) {
-        router.replace("/dashboard");
-      }
-      return result;
-    },
-    [login, router]
-  );
 
   return <LoginForm onSubmit={handleSubmit} />;
 }

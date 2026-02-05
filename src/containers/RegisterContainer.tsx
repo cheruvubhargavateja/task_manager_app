@@ -9,6 +9,17 @@ export function RegisterContainer() {
   const { register, isAuthenticated } = useAuth();
   const router = useRouter();
 
+  const handleSubmit = useCallback(
+    (credentials: { name: string; email: string; password: string }) => {
+      const result = register(credentials);
+      if (result.success) {
+        router.replace("/dashboard");
+      }
+      return result;
+    },
+    [register, router]
+  );
+
   useEffect(() => {
     if (isAuthenticated) router.replace("/dashboard");
   }, [isAuthenticated, router]);
@@ -20,17 +31,6 @@ export function RegisterContainer() {
       </div>
     );
   }
-
-  const handleSubmit = useCallback(
-    (credentials: { name: string; email: string; password: string }) => {
-      const result = register(credentials);
-      if (result.success) {
-        router.replace("/dashboard");
-      }
-      return result;
-    },
-    [register, router]
-  );
 
   return <RegisterForm onSubmit={handleSubmit} />;
 }

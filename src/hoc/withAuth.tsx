@@ -1,23 +1,22 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { useEffect, type ComponentType } from "react";
 import { useAuth } from "@/hooks/useAuth";
 
 /**
  * HOC that protects a page: redirects to /login if not authenticated.
  * Use for dashboard and any route that requires login.
+ * Uses window.location for redirect so navigation completes after auth state clears.
  */
 export function withAuth<P extends object>(WrappedComponent: ComponentType<P>) {
   function WithAuthComponent(props: P) {
     const { isAuthenticated } = useAuth();
-    const router = useRouter();
 
     useEffect(() => {
-      if (!isAuthenticated) {
-        router.replace("/login");
+      if (!isAuthenticated && typeof window !== "undefined") {
+        window.location.replace("/login");
       }
-    }, [isAuthenticated, router]);
+    }, [isAuthenticated]);
 
     if (!isAuthenticated) {
       return (
